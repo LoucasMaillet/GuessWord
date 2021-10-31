@@ -1,6 +1,0 @@
-$video(./other/default.mp4)
-
-Hello there,
-that sentence is an exemple,
-by the way, look at the help
-"(click help)."
