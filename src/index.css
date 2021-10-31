@@ -3,7 +3,7 @@
     font-style: normal;
     font-weight: 300;
     font-display: swap;
-    src: url("/home/lucas-maillet/Documents/Projets/Web/dad/GuessWord/other/ubuntu.ttf") format('woff2');
+    src: url("./other/ubuntu.ttf") format('woff2');
 }
 
 * {
