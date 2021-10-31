@@ -1,0 +1,121 @@
+@font-face {
+    font-family: 'Ubuntu';
+    font-style: normal;
+    font-weight: 300;
+    font-display: swap;
+    src: url("/home/lucas-maillet/Documents/Projets/Web/dad/GuessWord/other/ubuntu.ttf") format('woff2');
+}
+
+* {
+    text-align: center;
+    -c-back: #101218;
+    --c-1: #fff;
+    --c-1-h: #ffffff31;
+    --c-red: #e73535;
+    --c-green: #35e761;
+    font-family: Ubuntu, sans-serif;
+}
+
+body {
+    margin: 0;
+    display: grid;
+    background-size: cover;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' version='1.1' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:svgjs='http://svgjs.com/svgjs' preserveAspectRatio='none' viewBox='0 0 1920 1080'%3e%3cg mask='url(%26quot%3b%23SvgjsMask1058%26quot%3b)' fill='none'%3e%3crect width='1920' height='1080' x='0' y='0' fill='rgba(16%2c 18%2c 24%2c 1)'%3e%3c/rect%3e%3cpath d='M0%2c854.105C168.276%2c883.251%2c350.215%2c860.813%2c494.877%2c770.044C640.158%2c678.887%2c727.232%2c520.238%2c787.819%2c359.785C845.646%2c206.641%2c870.742%2c39.294%2c830.746%2c-119.443C792.788%2c-270.089%2c670.19%2c-375.264%2c572.229%2c-495.84C470.724%2c-620.777%2c391.734%2c-769.814%2c246.297%2c-838.812C89.287%2c-913.3%2c-106.002%2c-968.555%2c-261.768%2c-891.501C-417.116%2c-814.654%2c-432.484%2c-601.865%2c-526.728%2c-456.412C-604.753%2c-335.991%2c-746.691%2c-252.321%2c-767.869%2c-110.403C-789.073%2c31.694%2c-703.858%2c163.659%2c-638.338%2c291.519C-575.504%2c414.138%2c-499.109%2c524.689%2c-395.743%2c615.788C-277.831%2c719.707%2c-154.864%2c827.282%2c0%2c854.105' fill='%230a0c10'%3e%3c/path%3e%3cpath d='M1920 1969.501C2083.511 1950.914 2173.077 1774.6950000000002 2296.502 1665.848 2399.425 1575.0819999999999 2510.445 1498.995 2584.516 1383.474 2667.7619999999997 1253.644 2760.763 1114.616 2748.525 960.876 2736.076 804.491 2609.511 689.094 2519.0389999999998 560.929 2418.0860000000002 417.91600000000005 2348.324 237.46000000000004 2188.094 166.957 2022.364 94.03399999999999 1824.636 115.05399999999997 1656.096 181.22400000000005 1494.56 244.64499999999998 1392.8220000000001 393.576 1278.4470000000001 524.092 1163.403 655.371 977.1 771.4100000000001 986.135 945.73 995.429 1125.062 1227.5810000000001 1200.26 1321.4270000000001 1353.359 1399.005 1479.9180000000001 1380.717 1651.717 1484.154 1758.19 1598.984 1876.3899999999999 1756.26 1988.114 1920 1969.501' fill='%23161820'%3e%3c/path%3e%3c/g%3e%3cdefs%3e%3cmask id='SvgjsMask1058'%3e%3crect width='1920' height='1080' fill='white'%3e%3c/rect%3e%3c/mask%3e%3c/defs%3e%3c/svg%3e");
+    color: var(-c-back);
+}
+
+input {
+    display: none;
+}
+
+.box {
+    display: grid;
+    min-height: calc(100vh - 4em);
+    max-height: max-content;
+    margin: 2em;
+    justify-content: center;
+    align-items: center;
+}
+
+#event {
+    font-size: x-large;
+    margin: auto;
+    border-radius: 1em;
+    overflow: hidden;
+    min-width: 3vw;
+    max-width: max-content;
+    position: relative;
+}
+
+#event p {
+    margin: .5em;
+    transition: all .1s ease-in-out;
+}
+
+#event p:before {
+    background: var(--c-1);
+    content: "";
+    inset: 0;
+    z-index: -1;
+    position: absolute;
+}
+
+#event iframe, #event video {
+    margin: 0;
+    overflow: hidden;
+    width: 560;
+    height: 315;
+}
+
+#output {
+    margin: 2em;
+    max-width: 80vw;
+}
+
+#output word {
+    display: inline-block;
+    width: max-content;
+    height: max-content;
+    background-color: var(--c-1);
+    border-radius: 1em;
+    padding: .5em;
+    max-width: 80vw;
+    word-wrap: break-word;
+    margin: .4em;
+}
+
+.bottom {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.ico svg {
+    width: 1em;
+    padding: .25em;
+    fill: var(--c-1);
+    border-radius: 1em;
+}
+
+.ico svg:hover {
+    background: var(--c-1-h);
+}
+
+#input {
+    border-radius: 1em;
+    background-color: var(--c-green);
+    color: var(-c-back);
+    padding: .5em;
+    max-width: 90vw;
+    max-height: 10vh;
+    min-width: 8em;
+    width: max-content;
+    word-wrap: break-word;
+    break-after: right;
+    overflow-y: scroll;
+    scrollbar-width: none;
+}
+
+#input:empty::after {
+    content: attr(data-placeholder);
+}

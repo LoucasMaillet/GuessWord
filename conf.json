@@ -1,0 +1,8 @@
+{
+  "project": "GuessWord",
+  "file": "index.html",
+  "vars": {
+    "name": "GuessWord",
+    "version": "0.5"
+  }
+}
