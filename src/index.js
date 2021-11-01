@@ -196,6 +196,7 @@ function wordClick(el) {
         el.innerHTML = el.dataset.hideWord;
     }
 }
+
 async function gen(text) {
     /**
      * Generate each word.
@@ -250,33 +251,8 @@ async function gen(text) {
     })
 }
 
-async function setMACRO(text) {
-    /**
-     * Call function from string.
-     * @param {string} text     Text 
-     * @return {string}         results of macro
-    */
-    /*for (mrc in macro) {
-        if (text.includes(`$${mrc}`)) {
-            arg = text.split(`$${mrc}(`);
-            if (arg[1]) {
-                arg = arg[1].split(")")[0];
-                res = await macro[mrc](...arg.split(","));
-                if (!res) saveMacro.push(`$${mrc}(${arg})`); res = "";
-                text = text.replace(`$${mrc}(${arg})`, res);
-            } else {
-                res = await macro[mrc]();
-                if (!res) saveMacro.push(`$${mrc}`); res = "";
-                text = text.replace(`$${mrc}`, res);
-            }
-        }
-    }*/
-    return text;
-}
-
 async function genString(text) {
     try {
-        text = await setMACRO(text);
         if (text.toLowerCase() != text.toUpperCase()) {
             output.innerHTML = "";
             await gen(text);
