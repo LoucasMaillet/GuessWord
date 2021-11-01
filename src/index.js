@@ -297,4 +297,4 @@ input.addEventListener("keydown", async (event) => {
     }
 });
 
-gen(`Hello there,\nthat $video(ee) sentence $helloThere is an exemple,\nby the way, look at the help\n"(click help)."`);
+gen(`Hello there,\nthat sentence is an exemple,\nby the way, look at the help\n"(click help)."`);
