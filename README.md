@@ -1,2 +1,3 @@
 # GuessWord
-Just a little webpage who don't require a server to work
+Just a little webpage teacher game who don't require a server to work.
+Was build with WPC (see: https://github.com/LoucasMaillet/WPC)
