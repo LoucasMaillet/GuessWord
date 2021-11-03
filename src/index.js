@@ -1,19 +1,18 @@
 
-var input = document.getElementById("input");
-var output = document.getElementById("output");
-var event = document.getElementById("event");
+var stdin = document.getElementById("stdin");
+var stdout = document.getElementById("stdout");
+var topBox = document.getElementById("topBox");
 
 var saveText = [];
-var saveMacro = [];
 var showState = false;
 var wordRegex = /./g;
-var wordCaracter = "X ";
+var wordCharacter = "X ";
 var chrono;
 
 String.prototype.remove = function () {
     /**
-     * Delete text from string.
-     * @param {string} arguments      Removed text
+     * Delete text from String.
+     * @param {String} arguments Removed text.
      */
     res = this;
     Object.values(arguments).forEach((c) => {
@@ -22,11 +21,11 @@ String.prototype.remove = function () {
     return res
 };
 
-var macro = {
+var macros = {
     file: async () => {
         /**
          * Add a text file.
-         * @return {string}
+         * @return {String}
         */
         open = document.createElement("input");
         open.type = "file";
@@ -48,45 +47,22 @@ var macro = {
         });
     },
 
-    show: () => {
-        /**
-         * Show every word.
-        */
-        if (!showState) {
-            output.querySelectorAll("word").forEach((el) => {
-                if (el.innerHTML != el.dataset.word) {
-                    saveText[el.dataset.index] = `${saveText[el.dataset.index][0]}👀${saveText[el.dataset.index].slice(1)}`;
-                    el.innerHTML = el.dataset.word;
-                }
-            });
-            showState = true;
-        } else {
-            output.querySelectorAll("word").forEach((el) => {
-                if (el.innerHTML == el.dataset.word) {
-                    saveText[el.dataset.index] = saveText[el.dataset.index].replace("👀", "");
-                    el.innerHTML = el.dataset.hideWord;
-                }
-            });
-            showState = false;
-        }
-    },
-
     video: (path) => {
         /**
          * Show a video from youtube.
-         * @param {string} path      Path to the video 
+         * @param {String} path Path to the video 
         */
-        event.innerHTML = `<video controls src="${path}"></video>`;
+        topBox.innerHTML = `<video controls src="${path}"></video>`;
     },
 
     videoYt: (url) => {
         /**
          * Show a video from youtube.
-         * @param {string} url      Youtube link of video 
+         * @param {String} url Youtube link of video 
         */
         url = url.match(/^.*(youtube\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/)[2];
         if (url) {
-            event.innerHTML = `
+            topBox.innerHTML = `
                         <iframe
                             src="https://www.youtube.com/embed/${url}" 
                             title="YouTube video player" frameborder="0" 
@@ -95,18 +71,18 @@ var macro = {
                             allowfullscreen>
                         </iframe>`;
         } else {
-            event.innerHTM = "<p>Error: Bad url</p>"
+            topBox.innerHTM = "<p>Error: Bad url</p>"
         }
     },
 
-    transfrom: (regex, caracter) => {
+    transfrom: (character, regex = wordRegex) => {
         /**
          * Change the regex who's in charge of the caracter replacement'.
-         * @param {string} regex    The regex that transform the word (see: https://regex101.com/)
-         * @param {string} caracter Replace every letter from word
+         * @param {String} character Replace every letter from word
+         * @param {String} regex The regex that transform the word (see: https://regex101.com/). Default to /./g
         */
         wordRegex = new RegExp(rgx, "g");
-        wordCaracter = caracter;
+        wordCharacter = character;
     },
 
     reset: () => {
@@ -114,11 +90,12 @@ var macro = {
          * Reset page.
         */
         clearTimeout(chrono);
-        event.macro = "";
-        event.innerHTML = "<p>Guess word v0.4</p>";
-        event.style.color = "var(--c-back)";
-        wordRegex = /[^\d.-]/g;
-        wordCaracter = "X ";
+        topBox.macros = "";
+        topBox.innerHTML = "<p><#name> <#version></p>";
+        topBox.style.color = "var(--c-back)";
+        wordRegex = /./g;
+        wordCharacter = "X ";
+        genSave("$helloThere");
     },
 
     chrono: (min = 1, sec = 0) => {
@@ -131,31 +108,29 @@ var macro = {
         count = delay;
         clearTimeout(chrono);
         chrono = setInterval(() => {
-            event.style.display = "block";
-            event.innerHTML = `<p>${`${Math.floor(count / 60)}:`.padStart(3, "0")}${`${count % 60}`.padStart(2, "0")}</p>`;
+            topBox.style.display = "block";
+            topBox.innerHTML = `<p>${`${Math.floor(count / 60)}:`.padStart(3, "0")}${`${count % 60}`.padStart(2, "0")}</p>`;
             if (count == 0) {
-                event.innerHTML = "<p>Time's up !</p>";
+                topBox.innerHTML = "<p>Time's up !</p>";
                 setTimeout(() => {
-                    event.innerHTML = "<p>Guess word v0.4</p>";
-                    event.style.color = "var(-c-back)";
+                    topBox.innerHTML = "<p>Guess word v0.4</p>";
+                    topBox.style.color = "var(-c-back)";
                 }, 3000);
                 clearTimeout(chrono);
             } else if (count <= 5) {
-                event.style.color = "var(--c-red)";
+                topBox.style.color = "var(--c-red)";
             }
             count--;
         }, 1000);
     },
 
-    helloThere: (text = "Hello there!", desc = "General Kenobi") => {
+    helloThere: () => {
         /**
          * Just a simple exemple.
-         * @param {string} text     Text 
-         * @param {string} desc     Description of text 
-         * @return {string}
+         * @return {String}
         */
-        console.log(`%s%c - ${desc} %s%c`, `${text}`, "font-style: italic");
-        return `${text}\n"${desc.italics()}"`
+        console.log(`%s%c - General Kenobi %s%c`, "Hello there!", "font-style: italic");
+        return `Hello there,\nthis sentence is an exemple,\nby the way, look at the help\n¤(click help).¤¤`
     }
 };
 
@@ -163,114 +138,143 @@ function help() {
     /**
      * Show a short help about the typographie.
     */
-    output.innerHTML =
+    stdout.innerHTML =
         `<word style="text-align:left">
                         <strong><#name> (<#version>)</strong><br>
                         <br>
-                        • Write multiple words in one cell with "Hello world!"<br>
-                        • Call functions with '$function' or '$function(arg0,arg1)'<br>
-                        • Write commentary with '<i># your comment</i> '<br>
-                        • Use <kbd>Ctrl</kbd> + <kbd>Maj</kbd> + <kbd>i</kbd> to search and understand the code<br>
+                        • Wrap sentence with "¤" to have use space in cell.<br>
+                        • Call macro with "$macro" or "$macro(arguments)".<br>
+                        • Use <kbd>Ctrl</kbd> + <kbd>Maj</kbd> + <kbd>i</kbd> to search and understand the code<br>.
                         <br>
-                        • Availables functions :<br>
-                        &emsp;• $${Object.keys(macro).sort().join(",<br>&emsp;• $")}
+                        • Available macros :<br>
+                        &emsp;• $${Object.keys(macros).sort().join(",<br>&emsp;• $")}
                         <br>
                         <br>
                         <i>Credits to Lucas Maillet, idea from his father</i>
                     </word>`;
 }
 
+function show() {
+    /**
+     * Show every word.
+    */
+    if (showState) showState = false;
+    else showState = true;
+    stdout.querySelectorAll("word").forEach((word) => {
+        if ((word.innerHTML == word.dataset.word) != showState) {
+            word.click();
+        }
+    });
+}
+
 function save() {
+    /**
+     * Save content.
+     */
     fileSaver = document.createElement("a");
-    fileSaver.download = `${new Date().toLocaleDateString('fr-FR', { hour12: false }).replace(/(\/)/g, "-")}.gw`;
-    fileSaver.href = `data:text/plain;charset=utf-8, ${encodeURIComponent(saveMacro.join(" ") + saveText.join(" "))}`;
+    fileSaver.download = `${new Date().toLocaleDateString('fr-FR', { hour12: false }).replace(/(\/)/g, "-")}.txt`;
+    fileSaver.href = `data:text/plain;charset=utf-8, ${encodeURIComponent(saveText.join(" "))}`;
     fileSaver.click();
 }
 
-function wordClick(el) {
-    if (el.innerHTML != el.dataset.word) {
-        saveText[el.dataset.index] = `${saveText[el.dataset.index][0]}👀${saveText[el.dataset.index].slice(1)}`;
-        el.innerHTML = el.dataset.word;
+function wordClick(word) {
+    /**
+     * Un/show a word.
+     * @param {HTMLElement} word Word to un/show.
+    */
+    if (word.innerHTML != word.dataset.word) {
+        word.innerHTML = word.dataset.word;
     } else {
-        saveText[el.dataset.index] = saveText[el.dataset.index].replace("👀", "");
-        el.innerHTML = el.dataset.hideWord;
+        word.innerHTML = word.dataset.hideWord;
     }
 }
 
-async function gen(text) {
+function wordClickSave(word) {
+    /**
+     * Un/show a word and save his state.
+     * @param {HTMLElement} word Word to un/show.
+    */
+    if (word.innerHTML != word.dataset.word) {
+        saveText[word.dataset.id] = `${saveText[word.dataset.id][0]}👀${saveText[word.dataset.id].slice(1)}`;
+        word.innerHTML = word.dataset.word;
+    } else {
+        saveText[word.dataset.id] = saveText[word.dataset.id].replace("👀", "");
+        word.innerHTML = word.dataset.hideWord;
+    }
+}
+
+function genWord(word) {
+    wordHtml = document.createElement("word");
+    wordHtml.dataset.word = word.remove(/¤/g, "👀");
+    wordHtml.title = `length : ${wordHtml.dataset.word.length}`;
+    wordHtml.dataset.hideWord = wordHtml.dataset.word.replace(wordRegex, wordCharacter);
+    if (word.includes("👀")) wordHtml.innerHTML = wordHtml.dataset.word;
+    else wordHtml.innerHTML = wordHtml.dataset.hideWord;
+    return wordHtml
+}
+
+function gen(text) {
     /**
      * Generate each word.
-     * @param {string} text      Text
-     */
-    saveText = [];
-    index = 0;
-    text.split(/\n/g).forEach((line) => {
-        words = line.match(/([^\s"]+|"[^"]*")/g);
-        if (words) {
-            words.forEach((word) => {
-                wordHtml = document.createElement("word");
-                wordHtml.title = `length : ${word.length}`;
-                wordHtml.dataset.index = index;
-                wordHtml.dataset.word = word.remove(/\"/g, "👀");
-                wordHtml.dataset.hideWord = word.remove(/\"/g).replace(wordRegex, wordCaracter);
-                wordHtml.setAttribute("onclick", `wordClick(this)`);
-                if (word.includes("$")) {
-                    for (mrc in macro) {
-                        if (text.includes(`$${mrc}`)) {
-                            arg = text.split(`$${mrc}(`);
-                            if (arg[1]) {
-                                arg = arg[1].split(")")[0];
-                                res = macro[mrc](...arg.split(","));
-                                mcrStr = `${mrc}(${arg})`;
-                            } else {
-                                res = macro[mrc]();
-                                mcrStr = mrc;
-                            }
-                            if (res) {
-                                saveMacro.push(`$${mrc}`);
-                                gen(res);
-                                console.log("e")
-                            }
-                        }
-                    }
-                } else {
-                    if (word.includes("👀")) {
-                        wordHtml.innerHTML = wordHtml.dataset.word;
-                    } else {
-                        wordHtml.innerHTML = wordHtml.dataset.hideWord;
-                    }
-                    output.appendChild(wordHtml);
-                    saveText.push(word);
-                    index++;
-                }
-            });
-            output.innerHTML += "<br>";
-            saveText.push("\n");
-            index++;
-        }
-    })
-}
-
-async function genString(text) {
-    try {
-        if (text.toLowerCase() != text.toUpperCase()) {
-            output.innerHTML = "";
-            await gen(text);
-        }
-    } catch (err) {
-        output.innerHTML = `<word>${err}</word>`;
-    }
-}
-
-input.addEventListener("keydown", async (event) => {
-    /**
-     * Process text from input.
-     * @param {event} event     Event 
+     * @param {String} text Text to generate.
     */
-    if (event.keyCode == 13 && !event.shiftKey) {
-        genString(input.innerText);
-        input.innerText = "";
+    text.match(/([^\s¤]+|¤[^¤]*¤+|\n)/g).forEach((word) => {
+        if (word == "\n") {
+            stdout.innerHTML += "<br>";
+            return
+        }
+        word = genWord(word);
+        word.setAttribute("onclick", `wordClick(this)`);
+        stdout.appendChild(word);
+    });
+}
+
+async function genSave(text) {
+    /**
+     * Generate each word and save it.
+     * @param {String} text Text to generate.
+    */
+    if (text.toLowerCase() != text.toUpperCase()) {
+        stdout.innerHTML = "";
+        saveText = [];
+        let words = text.match(/([^\s¤]+|¤[^¤]*¤+|\n)/g);
+        for (id = 0; id < words.length; id++) {
+            let word = words[id];
+            saveText.push(word);
+            if (word == "\n") {
+                stdout.innerHTML += "<br>";
+                continue
+            }
+            if (word[0] == "$") {
+                try {
+                    let macro = word.remove(/¤/g, "👀").match(/(?<=\$).*?(?=\(|$)/g)[0];
+                    if (macro in macros) {
+                        res = await (eval(`macros.${macro}`))(...eval(`[${word.match(/(?<=\().*?(?=\))/g) || undefined}]`));
+                        if (res) gen(res)
+                    }
+                } catch (err) {
+                    stdout.innerHTML += `<word>${err}</word>`;
+                }
+            } else {
+                word = genWord(word);
+                word.dataset.id = id;
+                word.setAttribute("onclick", `wordClickSave(this)`);
+                stdout.appendChild(word);
+            }
+        };
+    }
+
+}
+
+stdin.addEventListener("keydown", async (key) => {
+    /**
+     * Process text from stdin.
+     * @param {topBox} key Key. 
+    */
+    if (key.key == "Enter" && !key.shiftKey) {
+        genSave(stdin.innerText);
+        stdin.innerText = "";
     }
 });
 
-gen(`Hello there,\nthat sentence is an exemple,\nby the way, look at the help\n"(click help)."`);
+genSave("$helloThere");
