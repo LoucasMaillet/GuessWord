@@ -118,7 +118,7 @@ var macros = {
                 }, 3000);
                 clearTimeout(chrono);
             } else if (count <= 5) {
-                topBox.style.color = "var(--c-red)";
+                topBox.style.color = "var(--c-main)";
             }
             count--;
         }, 1000);
@@ -139,18 +139,20 @@ function help() {
      * Show a short help about the typographie.
     */
     stdout.innerHTML =
-        `<word style="text-align:left">
+        `<word style="text-align:left; padding:1em">
                         <strong><#name> (<#version>)</strong><br>
                         <br>
-                        • Wrap sentence with "¤" to have use space in cell.<br>
-                        • Call macro with "$macro" or "$macro(arguments)".<br>
-                        • Use <kbd>Ctrl</kbd> + <kbd>Maj</kbd> + <kbd>i</kbd> to search and understand the code<br>.
+                        <strong>Usage:</strong><br>
+                        &emsp;Wrap sentence with "¤" to have use space in cell.<br>
+                        &emsp;Call macro with "$macro" or "$macro(arguments)".<br>
+                        &emsp;Use <kbd>Ctrl</kbd> + <kbd>Maj</kbd> + <kbd>i</kbd> to search and understand the code.<br>
                         <br>
-                        • Available macros :<br>
-                        &emsp;• $${Object.keys(macros).sort().join(",<br>&emsp;• $")}
+                        <strong>Macros:</strong><br>
+                        &emsp;$${Object.keys(macros).sort().join(", $")}<br>
                         <br>
-                        <br>
-                        <i>Credits to Lucas Maillet, idea from his father</i>
+                        <strong>Credits:</strong><br>
+                        &emsp;Github: https://github.com/LoucasMaillet/GuessWord<br>
+                        &emsp;Author: Lucas Maillet
                     </word>`;
 }
 
@@ -203,30 +205,38 @@ function wordClickSave(word) {
     }
 }
 
-function genWord(word) {
-    wordHtml = document.createElement("word");
+function sleep(ms) {
+    return;
+}
+
+async function genWord(word) {
+    let wordHtml = document.createElement("word");
     wordHtml.dataset.word = word.remove(/¤/g, "👀");
     wordHtml.title = `length : ${wordHtml.dataset.word.length}`;
     wordHtml.dataset.hideWord = wordHtml.dataset.word.replace(wordRegex, wordCharacter);
     if (word.includes("👀")) wordHtml.innerHTML = wordHtml.dataset.word;
     else wordHtml.innerHTML = wordHtml.dataset.hideWord;
+    stdout.appendChild(wordHtml);
+    document.body.scrollTop = document.body.offsetHeight;
+    await new Promise(res => setTimeout(res, 80));;
     return wordHtml
 }
 
-function gen(text) {
+async function gen(text) {
     /**
      * Generate each word.
      * @param {String} text Text to generate.
     */
-    text.match(/([^\s¤]+|¤[^¤]*¤+|\n)/g).forEach((word) => {
+    words = text.match(/([^\s¤]+|¤[^¤]*¤+|\n)/g);
+    for (word in words) {
+        word = words[word];
         if (word == "\n") {
             stdout.innerHTML += "<br>";
-            return
+            continue
         }
-        word = genWord(word);
+        word = await genWord(word);
         word.setAttribute("onclick", `wordClick(this)`);
-        stdout.appendChild(word);
-    });
+    }
 }
 
 async function genSave(text) {
@@ -234,36 +244,33 @@ async function genSave(text) {
      * Generate each word and save it.
      * @param {String} text Text to generate.
     */
-    if (text.toLowerCase() != text.toUpperCase()) {
-        stdout.innerHTML = "";
-        saveText = [];
-        let words = text.match(/([^\s¤]+|¤[^¤]*¤+|\n)/g);
-        for (id = 0; id < words.length; id++) {
-            let word = words[id];
-            saveText.push(word);
-            if (word == "\n") {
-                stdout.innerHTML += "<br>";
-                continue
-            }
-            if (word[0] == "$") {
-                try {
-                    let macro = word.remove(/¤/g, "👀").match(/(?<=\$).*?(?=\(|$)/g)[0];
-                    if (macro in macros) {
-                        res = await (eval(`macros.${macro}`))(...eval(`[${word.match(/(?<=\().*?(?=\))/g) || undefined}]`));
-                        if (res) gen(res)
-                    }
-                } catch (err) {
-                    stdout.innerHTML += `<word>${err}</word>`;
+    stdout.innerHTML = "";
+    saveText = [];
+    let words = text.match(/([^\s¤]+|¤[^¤]*¤+|\n)/g);
+    for (id = 0; id < words.length; id++) {
+        let word = words[id];
+        saveText.push(word);
+        if (word == "\n") {
+            stdout.innerHTML += "<br>";
+            continue
+        }
+        if (word.includes("$")) {
+            try {
+                let macro = word.remove(/¤/g, "👀").match(/(?<=\$).*?(?=\(|$)/g)[0];
+                if (macro in macros) {
+                    res = await (eval(`macros.${macro}`))(...eval(`[${word.match(/(?<=\().*?(?=\))/g) || undefined}]`));
+                    if (res) await gen(res)
                 }
-            } else {
-                word = genWord(word);
-                word.dataset.id = id;
-                word.setAttribute("onclick", `wordClickSave(this)`);
-                stdout.appendChild(word);
+            } catch (err) {
+                stdout.innerHTML += `<word>${err}</word>`;
             }
-        };
-    }
-
+        } else {
+            word = await genWord(word);
+            word.dataset.id = id;
+            word.setAttribute("onclick", `wordClickSave(this)`);
+            stdout.appendChild(word);
+        }
+    };
 }
 
 stdin.addEventListener("keydown", async (key) => {
