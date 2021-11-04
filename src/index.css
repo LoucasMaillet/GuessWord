@@ -51,6 +51,7 @@ body {
 }
 
 #stdout {
+    height: 100%;
     max-width: 80vw;
 }
 
