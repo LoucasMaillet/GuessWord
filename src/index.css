@@ -50,10 +50,14 @@ body {
     height: 315;
 }
 
-#stdout {
+.wrp {
     height: 100%;
     max-width: 80vw;
+    display: grid;
+    justify-content: center;
+    align-items: center;
 }
+
 
 #stdout span {
     display: inline-block;
