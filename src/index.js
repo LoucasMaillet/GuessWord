@@ -130,21 +130,21 @@ function help() {
      * Show a short help about the typographie.
     */
     stdout.innerHTML =
-        `<word style="text-align:left; padding:1em">
-                        <strong><#name> (<#version>)</strong><br>
-                        <br>
-                        <strong>Usage:</strong><br>
-                        &emsp;Wrap sentence with "¤" to have use space in cell.<br>
-                        &emsp;Call macro with "$macro" or "$macro(arguments)".<br>
-                        &emsp;Use <kbd>Ctrl</kbd> + <kbd>Maj</kbd> + <kbd>i</kbd> to search and understand the code.<br>
-                        <br>
-                        <strong>Macros:</strong><br>
-                        &emsp;$${Object.keys(macros).sort().join(", $")}<br>
-                        <br>
-                        <strong>Credits:</strong><br>
-                        &emsp;Github: https://github.com/LoucasMaillet/GuessWord<br>
-                        &emsp;Author: Lucas Maillet
-                    </word>`;
+        `<span style="text-align:left; padding:1em">
+            <strong><#name> (<#version>)</strong><br>
+            <br>
+            <strong>Usage:</strong><br>
+            &emsp;Wrap sentence with "¤" to have use space in cell.<br>
+            &emsp;Call macro with "$macro" or "$macro(arguments)".<br>
+            &emsp;Use <kbd>Ctrl</kbd> + <kbd>Maj</kbd> + <kbd>i</kbd> to search and understand the code.<br>
+            <br>
+            <strong>Macros:</strong><br>
+            &emsp;$${Object.keys(macros).sort().join(", $")}<br>
+            <br>
+            <strong>Credits:</strong><br>
+            &emsp;Github: https://github.com/LoucasMaillet/GuessWord<br>
+            &emsp;Author: Lucas Maillet
+        </span>`;
 }
 
 function show() {
