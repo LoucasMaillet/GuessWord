@@ -1,4 +1,4 @@
-$video("/home/lucas-maillet/Documents/Projets/Web/GuessWord/other/default.mp4")
+$video(".../GuessWord/other/default.mp4")
 
 $helloThere
 This is the only sentence 
