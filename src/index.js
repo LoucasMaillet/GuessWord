@@ -9,11 +9,11 @@ var wordRegex = /[A-Za-z]/g;
 var wordCharacter = "X ";
 var chrono;
 
+/**
+ * Delete text from String.
+ * @param {String} arguments Removed text.
+ */
 String.prototype.remove = function () {
-    /**
-     * Delete text from String.
-     * @param {String} arguments Removed text.
-     */
     res = this;
     Object.values(arguments).forEach((c) => {
         res = res.replace(c, "")
@@ -22,11 +22,11 @@ String.prototype.remove = function () {
 };
 
 var macros = {
+    /**
+     * Add a text file.
+     * @return {String}
+     */
     file: async () => {
-        /**
-         * Add a text file.
-         * @return {String}
-        */
         open = document.createElement("input");
         open.type = "file";
         return await new Promise((resolve, reject) => {
@@ -47,11 +47,11 @@ var macros = {
         });
     },
 
+    /**
+     * Show a local or a youtube video.
+     * @param {String} path Path/Url to the video 
+     */
     video: (path) => {
-        /**
-         * Show a local or a youtube video.
-         * @param {String} path Path/Url to the video 
-        */
         url = path.match(/^.*(youtube\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/);
         if (url) {
             topBox.innerHTML = `
@@ -67,20 +67,20 @@ var macros = {
         }
     },
 
+    /**
+     * Change the regex who's in charge of the caracter replacement'.
+     * @param {String} character Replace every letter from word
+     * @param {String} regex The regex that transform the word (see: https://regex101.com/). Default to /./g
+     */
     transfrom: (character, regex = wordRegex) => {
-        /**
-         * Change the regex who's in charge of the caracter replacement'.
-         * @param {String} character Replace every letter from word
-         * @param {String} regex The regex that transform the word (see: https://regex101.com/). Default to /./g
-        */
         wordRegex = new RegExp(rgx, "g");
         wordCharacter = character;
     },
 
+    /**
+     * Reset page.
+     */
     reset: () => {
-        /**
-         * Reset page.
-        */
         clearTimeout(chrono);
         topBox.macros = "";
         topBox.innerHTML = "<p><#name> <#version></p>";
@@ -90,12 +90,12 @@ var macros = {
         genSave("$helloThere");
     },
 
+    /**
+     * Start a chronometer.
+     * @param {number} min Minutes (default: 1)
+     * @param {number} sec Secondes (default: 0)
+     */
     chrono: (min = 1, sec = 0) => {
-        /**
-         * Start a chronometer.
-         * @param {number} min Minutes (default: 1)
-         * @param {number} sec Secondes (default: 0)
-        */
         delay = parseFloat(min) * 60 + parseFloat(sec);
         count = delay;
         clearTimeout(chrono);
@@ -116,19 +116,19 @@ var macros = {
         }, 1000);
     },
 
+    /**
+     * Just a simple exemple.
+     * @return {String}
+     */
     helloThere: () => {
-        /**
-         * Just a simple exemple.
-         * @return {String}
-        */
         return "Hello there,\nthis sentence is an exemple,\nby the way, look at the\nhelp ¤(click help).¤¤"
     }
 };
 
+/**
+ * Show a short help about the typographie.
+ */
 function help() {
-    /**
-     * Show a short help about the typographie.
-    */
     stdout.innerHTML =
         `<span style="text-align:left; padding:1em">
             <strong><#name> (<#version>)</strong><br>
@@ -147,10 +147,10 @@ function help() {
         </span>`;
 }
 
+/**
+ * Show every word.
+ */
 function show() {
-    /**
-     * Show every word.
-    */
     if (showState) showState = false;
     else showState = true;
     stdout.querySelectorAll("span").forEach((word) => {
@@ -160,21 +160,21 @@ function show() {
     });
 }
 
+/**
+ * Save content.
+ */
 function save() {
-    /**
-     * Save content.
-     */
     fileSaver = document.createElement("a");
     fileSaver.download = `${new Date().toLocaleDateString('fr-FR', { hour12: false }).replace(/(\/)/g, "-")}.txt`;
     fileSaver.href = `data:text/plain;charset=utf-8, ${encodeURIComponent(saveText.join(" "))}`;
     fileSaver.click();
 }
 
+/**
+ * Un/show a word.
+ * @param {HTMLElement} word Word to un/show.
+ */
 function wordClick(word) {
-    /**
-     * Un/show a word.
-     * @param {HTMLElement} word Word to un/show.
-    */
     if (word.innerHTML != word.dataset.word) {
         word.innerHTML = word.dataset.word;
     } else {
@@ -182,11 +182,11 @@ function wordClick(word) {
     }
 }
 
+/**
+ * Un/show a word and save his state.
+ * @param {HTMLElement} word Word to un/show.
+ */
 function wordClickSave(word) {
-    /**
-     * Un/show a word and save his state.
-     * @param {HTMLElement} word Word to un/show.
-    */
     if (word.innerHTML != word.dataset.word) {
         saveText[word.dataset.id] = `${saveText[word.dataset.id][0]}👀${saveText[word.dataset.id].slice(1)}`;
         word.innerHTML = word.dataset.word;
@@ -196,10 +196,10 @@ function wordClickSave(word) {
     }
 }
 
-function sleep(ms) {
-    return;
-}
-
+/**
+ * Generate a word HTMLElement.
+ * @param {Strin} word Word to turn in cell.
+ */
 async function genWord(word) {
     let wordHtml = document.createElement("span");
     wordHtml.dataset.word = word.remove(/¤/g, "👀");
@@ -214,11 +214,11 @@ async function genWord(word) {
     return wordHtml
 }
 
+/**
+ * Generate each word.
+ * @param {String} text Text to generate.
+ */
 async function gen(text) {
-    /**
-     * Generate each word.
-     * @param {String} text Text to generate.
-    */
     words = text.match(/([^\s¤]+|¤[^¤]*¤+|\n)/g);
     for (word in words) {
         word = words[word];
@@ -231,11 +231,11 @@ async function gen(text) {
     }
 }
 
+/**
+ * Generate each word and save it.
+ * @param {String} text Text to generate.
+ */
 async function genSave(text) {
-    /**
-     * Generate each word and save it.
-     * @param {String} text Text to generate.
-    */
     stdout.innerHTML = "";
     saveText = [];
     let words = text.match(/([^\s¤]+|¤[^¤]*¤+|\n)/g);
@@ -265,15 +265,16 @@ async function genSave(text) {
     };
 }
 
-stdin.addEventListener("keydown", async (key) => {
+stdin.addEventListener("keydown",
     /**
      * Process text from stdin.
      * @param {KeyboardEvent} key Key. 
-    */
-    if (key.key == "Enter" && !key.shiftKey) {
-        genSave(stdin.innerText);
-        stdin.innerText = "";
-    }
-});
+     */
+    async (key) => {
+        if (key.key == "Enter" && !key.shiftKey) {
+            genSave(stdin.innerText);
+            stdin.innerText = "";
+        }
+    });
 
 genSave(`$helloThere`);
