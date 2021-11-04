@@ -1,4 +1,4 @@
-$video(./GuessWord/other/default.mp4)
+$video(.../GuessWord/other/default.mp4)
 
 Hello there,
 that sentence is an exemple,
