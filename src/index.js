@@ -5,7 +5,7 @@ var topBox = document.getElementById("topBox");
 
 var saveText = [];
 var showState = false;
-var wordRegex = /./g;
+var wordRegex = /[A-Za-z]/g;
 var wordCharacter = "X ";
 var chrono;
 
@@ -54,7 +54,6 @@ var macros = {
         */
         url = path.match(/^.*(youtube\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/);
         if (url) {
-            console.log("eee")
             topBox.innerHTML = `
                          <iframe
                              src="https://www.youtube.com/embed/${url[2]}" 
@@ -86,7 +85,7 @@ var macros = {
         topBox.macros = "";
         topBox.innerHTML = "<p><#name> <#version></p>";
         topBox.style.color = "var(--c-back)";
-        wordRegex = /./g;
+        wordRegex = /[A-Za-z]/g;
         wordCharacter = "X ";
         genSave("$helloThere");
     },
@@ -122,7 +121,6 @@ var macros = {
          * Just a simple exemple.
          * @return {String}
         */
-        console.log(`%s%c - General Kenobi %s%c`, "Hello there!", "font-style: italic");
         return `Hello there,\nthis sentence is an exemple,\nby the way, look at the help\n¤(click help).¤¤`
     }
 };
@@ -277,4 +275,4 @@ stdin.addEventListener("keydown", async (key) => {
     }
 });
 
-genSave(`$video("/home/lucas-maillet/Documents/Projets/Web/GuessWord/other/default.mp4") $helloThere`);
+genSave(`$helloThere`);
