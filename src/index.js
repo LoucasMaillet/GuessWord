@@ -49,29 +49,22 @@ var macros = {
 
     video: (path) => {
         /**
-         * Show a video from youtube.
-         * @param {String} path Path to the video 
+         * Show a local or a youtube video.
+         * @param {String} path Path/Url to the video 
         */
-        topBox.innerHTML = `<video controls src="${path}"></video>`;
-    },
-
-    videoYt: (url) => {
-        /**
-         * Show a video from youtube.
-         * @param {String} url Youtube link of video 
-        */
-        url = url.match(/^.*(youtube\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/)[2];
+        url = path.match(/^.*(youtube\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/);
         if (url) {
+            console.log("eee")
             topBox.innerHTML = `
-                        <iframe
-                            src="https://www.youtube.com/embed/${url}" 
-                            title="YouTube video player" frameborder="0" 
-                            allow="accelerometer; autoplay; clipboard-write; 
-                            encrypted-media; gyroscope; picture-in-picture" 
-                            allowfullscreen>
-                        </iframe>`;
+                         <iframe
+                             src="https://www.youtube.com/embed/${url[2]}" 
+                             title="YouTube video player" frameborder="0" 
+                             allow="accelerometer; autoplay; clipboard-write; 
+                             encrypted-media; gyroscope; picture-in-picture" 
+                             allowfullscreen>
+                         </iframe>`;
         } else {
-            topBox.innerHTM = "<p>Error: Bad url</p>"
+            topBox.innerHTML = `<video controls src="${path}"></video>`;
         }
     },
 
@@ -284,4 +277,4 @@ stdin.addEventListener("keydown", async (key) => {
     }
 });
 
-genSave("$helloThere");
+genSave(`$video("/home/lucas-maillet/Documents/Projets/Web/GuessWord/other/default.mp4") $helloThere`);
