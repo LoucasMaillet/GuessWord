@@ -121,7 +121,7 @@ var macros = {
          * Just a simple exemple.
          * @return {String}
         */
-        return `Hello there,\nthis sentence is an exemple,\nby the way, look at the help\n¤(click help).¤¤`
+        return "Hello there,\nthis sentence is an exemple,\nby the way, look at the\nhelp ¤(click help).¤¤"
     }
 };
 
@@ -153,7 +153,7 @@ function show() {
     */
     if (showState) showState = false;
     else showState = true;
-    stdout.querySelectorAll("word").forEach((word) => {
+    stdout.querySelectorAll("span").forEach((word) => {
         if ((word.innerHTML == word.dataset.word) != showState) {
             word.click();
         }
@@ -201,15 +201,16 @@ function sleep(ms) {
 }
 
 async function genWord(word) {
-    let wordHtml = document.createElement("word");
+    let wordHtml = document.createElement("span");
     wordHtml.dataset.word = word.remove(/¤/g, "👀");
     wordHtml.title = `length : ${wordHtml.dataset.word.length}`;
     wordHtml.dataset.hideWord = wordHtml.dataset.word.replace(wordRegex, wordCharacter);
     if (word.includes("👀")) wordHtml.innerHTML = wordHtml.dataset.word;
     else wordHtml.innerHTML = wordHtml.dataset.hideWord;
+    wordHtml.classList.add("load");
     stdout.appendChild(wordHtml);
-    document.body.scrollTop = document.body.offsetHeight;
-    await new Promise(res => setTimeout(res, 80));;
+    await new Promise(res => setTimeout(res, 100));
+    wordHtml.classList.remove("load");
     return wordHtml
 }
 
@@ -267,7 +268,7 @@ async function genSave(text) {
 stdin.addEventListener("keydown", async (key) => {
     /**
      * Process text from stdin.
-     * @param {topBox} key Key. 
+     * @param {KeyboardEvent} key Key. 
     */
     if (key.key == "Enter" && !key.shiftKey) {
         genSave(stdin.innerText);
