@@ -1,4 +1,3 @@
-
 var stdin = document.getElementById("stdin");
 var stdout = document.getElementById("stdout");
 var topBox = document.getElementById("topBox");
