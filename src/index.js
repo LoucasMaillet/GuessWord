@@ -81,7 +81,6 @@ var macros = {
      */
     reset: () => {
         clearTimeout(chrono);
-        topBox.macros = "";
         topBox.innerHTML = "<p><#name> <#version></p>";
         topBox.style.color = "var(--c-back)";
         wordRegex = /[A-Za-z]/g;
@@ -128,6 +127,7 @@ var macros = {
  * Show a short help about the typographie.
  */
 function help() {
+    topBox.innerHTML = "<p><#name> <#version></p>";
     stdout.innerHTML =
         `<span style="text-align:left; padding:1em">
             <strong><#name> (<#version>)</strong><br>
