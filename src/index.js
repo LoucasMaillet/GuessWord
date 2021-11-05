@@ -8,6 +8,8 @@ var wordRegex = /[A-Za-z]/g;
 var wordCharacter = "X ";
 var chrono;
 
+/* Utils functions */
+
 /**
  * Delete text from String.
  * @param {String} arguments Removed text.
@@ -19,6 +21,8 @@ String.prototype.remove = function () {
     });
     return res
 };
+
+/* Macros */
 
 var macros = {
     /**
@@ -48,7 +52,7 @@ var macros = {
 
     /**
      * Show a local or a youtube video.
-     * @param {String} path Path/Url to the video 
+     * @param {String} path Path/Url to the video.
      */
     video: (path) => {
         url = path.match(/^.*(youtube\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/);
@@ -67,9 +71,17 @@ var macros = {
     },
 
     /**
+     * Popup to an extern ressource.
+     * @param {String} path Path/Url to ressource. 
+     */
+    extern: (path) => {
+        window.open(path, "blank")
+    },
+
+    /**
      * Change the regex who's in charge of the caracter replacement'.
-     * @param {String} character Replace every letter from word
-     * @param {String} regex The regex that transform the word (see: https://regex101.com/). Default to /./g
+     * @param {String} character Replace every letter from word.
+     * @param {String} regex The regex that transform the word (see: https://regex101.com/). Default to /./g.
      */
     transfrom: (character, regex = wordRegex) => {
         wordRegex = new RegExp(rgx, "g");
@@ -90,8 +102,8 @@ var macros = {
 
     /**
      * Start a chronometer.
-     * @param {number} min Minutes (default: 1)
-     * @param {number} sec Secondes (default: 0)
+     * @param {number} min Minutes (default: 1).
+     * @param {number} sec Secondes (default: 0).
      */
     chrono: (min = 1, sec = 0) => {
         delay = parseFloat(min) * 60 + parseFloat(sec);
@@ -119,9 +131,11 @@ var macros = {
      * @return {String}
      */
     helloThere: () => {
-        return "Hello there,\nthis sentence is an exemple,\nby the way, look at the\nhelp ¤(click help).¤¤"
+        return "Hello there,\nthis sentence is an exemple,\nby the way, look at the\nhelp ¤(click help).¤"
     }
 };
+
+/* Main functions */
 
 /**
  * Show a short help about the typographie.
@@ -218,15 +232,27 @@ async function genWord(word) {
  * @param {String} text Text to generate.
  */
 async function gen(text) {
-    words = text.match(/([^\s¤]+|¤[^¤]*¤+|\n)/g);
+    let words = text.match(/([^\s¤]+|¤[^¤]*¤+|\n)/g);
     for (word in words) {
         word = words[word];
         if (word == "\n") {
             stdout.innerHTML += "<br>";
             continue
         }
-        word = await genWord(word);
-        word.setAttribute("onclick", `wordClick(this)`);
+        else if (word.includes("$")) {
+            try {
+                let [macro, arguments] = word.remove(/¤/g, "👀").match(/(?<=\$).*?(?=\(|$)|(?<=\().*?(?=\))/g);
+                if (macro in macros) {
+                    res = await (eval(`macros.${macro}`))(...eval(`[${arguments}]`));
+                    if (res) await gen(res)
+                }
+            } catch (err) {
+                word = err;
+            }
+        } else {
+            word = await genWord(word);
+            word.setAttribute("onclick", `wordClick(this)`);
+        }
     }
 }
 
@@ -236,6 +262,7 @@ async function gen(text) {
  */
 async function genSave(text) {
     stdout.innerHTML = "";
+    stdin.innerText = "";
     saveText = [];
     let words = text.match(/([^\s¤]+|¤[^¤]*¤+|\n)/g);
     for (id = 0; id < words.length; id++) {
@@ -245,15 +272,15 @@ async function genSave(text) {
             stdout.innerHTML += "<br>";
             continue
         }
-        if (word.includes("$")) {
+        else if (word.includes("$")) {
             try {
-                let macro = word.remove(/¤/g, "👀").match(/(?<=\$).*?(?=\(|$)/g)[0];
+                let [macro, arguments] = word.remove(/¤/g, "👀").match(/(?<=\$).*?(?=\(|$)|(?<=\().*?(?=\))/g);
                 if (macro in macros) {
-                    res = await (eval(`macros.${macro}`))(...eval(`[${word.match(/(?<=\().*?(?=\))/g) || undefined}]`));
+                    res = await (eval(`macros.${macro}`))(...eval(`[${arguments}]`));
                     if (res) await gen(res)
                 }
             } catch (err) {
-                stdout.innerHTML += `<word>${err}</word>`;
+                word = err;
             }
         } else {
             word = await genWord(word);
@@ -264,16 +291,30 @@ async function genSave(text) {
     };
 }
 
-stdin.addEventListener("keydown",
-    /**
-     * Process text from stdin.
-     * @param {KeyboardEvent} key Key. 
-     */
-    async (key) => {
-        if (key.key == "Enter" && !key.shiftKey) {
-            genSave(stdin.innerText);
-            stdin.innerText = "";
-        }
-    });
+/* Events */
+
+/**
+ * Process text from stdin.
+ * @param {KeyboardEvent} key Key. 
+ */
+stdin.onkeydown = async (key) => {
+    if (key.key == "Enter" && !key.shiftKey) {
+        await genSave(stdin.innerText);
+    }
+};
+
+/**
+ * Process keyEvent of document.
+ * @param {KeyboardEvent} key Key. 
+ */
+document.onkeydown = (key) => {
+    /* Crtl + S */
+    if (key.key == "s" && key.ctrlKey) {
+        key.preventDefault();
+        save();
+    }
+};
+
+/* Setup */
 
 genSave(`$helloThere`);

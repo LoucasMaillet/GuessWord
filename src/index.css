@@ -70,7 +70,7 @@ body {
     word-wrap: break-word;
     color: var(--c-back);
     background: var(--c-on-back);
-    transition: all .1s;
+    transition: all 1s;
 }
 
 #stdout .load {
