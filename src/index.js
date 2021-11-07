@@ -201,10 +201,10 @@ function wordClick(word) {
  */
 function wordClickSave(word) {
     if (word.innerHTML != word.dataset.word) {
-        saveText[word.dataset.id] = `${saveText[word.dataset.id][0]}👀${saveText[word.dataset.id].slice(1)}`;
+        saveText[word.dataset.id] = `${saveText[word.dataset.id][0]}^${saveText[word.dataset.id].slice(1)}`;
         word.innerHTML = word.dataset.word;
     } else {
-        saveText[word.dataset.id] = saveText[word.dataset.id].replace("👀", "");
+        saveText[word.dataset.id] = saveText[word.dataset.id].remove("^");
         word.innerHTML = word.dataset.hideWord;
     }
 }
@@ -215,10 +215,10 @@ function wordClickSave(word) {
  */
 async function genWord(word) {
     let wordHtml = document.createElement("span");
-    wordHtml.dataset.word = word.remove(/¤/g, "👀");
+    wordHtml.dataset.word = word.remove(/¤/g, "^");
     wordHtml.title = `length : ${wordHtml.dataset.word.length}`;
     wordHtml.dataset.hideWord = wordHtml.dataset.word.replace(wordRegex, wordCharacter);
-    if (word.includes("👀")) wordHtml.innerHTML = wordHtml.dataset.word;
+    if (word.includes("^")) wordHtml.innerHTML = wordHtml.dataset.word;
     else wordHtml.innerHTML = wordHtml.dataset.hideWord;
     wordHtml.classList.add("load");
     stdout.appendChild(wordHtml);
@@ -241,7 +241,7 @@ async function gen(text) {
         }
         else if (word.includes("$")) {
             try {
-                let [macro, arguments] = word.remove(/¤/g, "👀").match(/(?<=\$).*?(?=\(|$)|(?<=\().*?(?=\))/g);
+                let [macro, arguments] = word.remove(/¤/g, "^").match(/(?<=\$).*?(?=\(|$)|(?<=\().*?(?=\))/g);
                 if (macro in macros) {
                     res = await (eval(`macros.${macro}`))(...eval(`[${arguments}]`));
                     if (res) await gen(res)
@@ -274,7 +274,7 @@ async function genSave(text) {
         }
         else if (word.includes("$")) {
             try {
-                let [macro, arguments] = word.remove(/¤/g, "👀").match(/(?<=\$).*?(?=\(|$)|(?<=\().*?(?=\))/g);
+                let [macro, arguments] = word.remove(/¤/g, "^").match(/(?<=\$).*?(?=\(|$)|(?<=\().*?(?=\))/g);
                 if (macro in macros) {
                     res = await (eval(`macros.${macro}`))(...eval(`[${arguments}]`));
                     if (res) await gen(res)
