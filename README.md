@@ -25,7 +25,7 @@ The results is returned in stdin, but only the macro is saved, not the callBack.
 - `$file` Get content from another file.
 - `$helloThere` Just the welcome message. 
 - `$reset` Reset parameters.
-- `$transfrom(characters, regex=wordRegex)` Change default characters who replace thos of words. And the regex is to choose what will be replaced.
+- `$transfrom(characters, regex=wordRegex)` Change default characters who replace those of words. And the regex is to choose what will be replaced.
 - `$video(url | path)` Show a local or youtube video.
 
 
