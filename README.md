@@ -12,7 +12,7 @@ Just a little webpage blind test game who don't require a server to work.
 
 # Usage
 
- * Wrap sentence with `¤` to have use space in cell.
+ * Wrap sentence with `¤` to use space in cell.
  * Call macro with `$macro` or `$macro(arguments)`.
  * Use `Ctrl + Maj + i` to search and understand the code.
 
