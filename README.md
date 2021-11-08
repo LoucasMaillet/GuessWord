@@ -13,7 +13,7 @@ Just a little webpage blind test game who don't require a server to work.
 
 # Preview
 
-See here : https://htmlpreview.github.io/?https://github.com/LoucasMaillet/GuessWord/blob/main/release/index.html
+You can see a preview of release [here](https://htmlpreview.github.io/?https://github.com/LoucasMaillet/GuessWord/blob/main/release/index.html). Just know the import of local file and video isn't supported.
 
 # Usage
 
