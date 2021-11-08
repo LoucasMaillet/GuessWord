@@ -36,5 +36,5 @@ The results is returned in stdin, but only the macro is saved, not the callBack.
 
 # Build
 
-Was build with WPC (see: https://github.com/LoucasMaillet/WPC)
+Was build with WPC (see [here](https://github.com/LoucasMaillet/WPC))
 
