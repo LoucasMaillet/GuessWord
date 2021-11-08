@@ -6,9 +6,14 @@ Just a little webpage blind test game who don't require a server to work.
 
 # Table of Contents
 
+* [Preview](#preview)
 * [Usage](#usage)
 * [Macros](#macros)
 * [Build](#build)
+
+# Preview
+
+See here : https://htmlpreview.github.io/?https://github.com/LoucasMaillet/GuessWord/blob/main/release/index.html
 
 # Usage
 
