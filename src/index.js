@@ -212,7 +212,7 @@ function save() {
  * @param {HTMLElement} word Word to un/show.
  */
 function wordClick(cell) {
-    if (cell.innerHTML != cell.dataset.cell) {
+    if (cell.innerHTML != cell.dataset.content) {
         cell.innerHTML = cell.dataset.content;
     } else {
         cell.innerHTML = cell.dataset.hide;
