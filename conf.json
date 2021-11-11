@@ -2,6 +2,6 @@
   "file": "index.html",
   "vars": {
     "name": "GuessWord",
-    "version": "v.6"
+    "version": "v0.0.2"
   }
 }

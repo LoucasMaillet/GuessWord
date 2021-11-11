@@ -1,11 +1,12 @@
 * {
-    --c-main: #b2e735;
+    --c-main: #e73535;
     --c-back: #161820;
-    --c-on-back: #fff;
-    --c-on-back-h: #c0c5c994;
-    --c-on-back-2: #21242c;
+    --c-shadow: #1e1f24;
+    --c-on-back: 255, 255, 255;
+    --c-on-back-on: #c7c7c7;
+    --c-on-back-h: #ffffff;
     margin: 0;
-    font-family: Ubuntu, sans-serif;
+    font-family: "Ubuntu", sans-serif;
     text-align: center;
     color: var(-c-back);
     font-size: 1.05em;
@@ -13,119 +14,165 @@
 
 body {
     scroll-behavior: smooth;
-    display: grid;
     background-size: cover;
     background-attachment: fixed;
     background-image: url("background.svg");
 }
 
-.box {
-    position: relative;
-    display: grid;
-    min-height: calc(100vh - 4em);
-    max-height: max-content;
-    padding: 2em;
-    justify-content: center;
-    align-items: center;
+a {
+    color: var(--c-main);
 }
 
-#topBox {
+.notifs {
+    position: absolute;
+    max-width: 50%;
+    top: 0;
+    right: 0;
+}
+
+.notifs>p {
+    animation: notif 5s;
+    color: var(--c-back);
+    background: rgba(var(--c-on-back), .8);
+    border-radius: 1em;
+    max-width: max-content;
+    scrollbar-width: none;
+    padding: .5em;
+    margin: 1em 1em 0 0;
+    position: relative;
+    transition: all .5s ease-in;
+}
+
+.box {
+    display: flex;
+    flex-direction: column;
+    padding: 1em;
+    gap: 1em;
+}
+
+.box>div {
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    gap: 1em;
+}
+
+.top {
     font-size: 1.5em;
     margin: auto;
     border-radius: 1em;
     overflow: hidden;
-}
-
-#topBox p {
     border-radius: 1.5em;
-    margin: .5em;
-    transition: all .1s ease-in-out;
-    background: var(--c-on-back);
-    padding: .5em;
 }
 
-#topBox iframe, #topBox video {
+.top>p {
+    max-width: 90vw;
+    border-radius: 1.5em;
+    transition: all .1s ease-in-out;
+    background: rgb(var(--c-on-back));
+    padding: .5em;
+    width: fit-content;
+}
+
+.top>iframe, .top>video {
     background: var(--c-on-back-2);
     width: 560;
     height: 315;
 }
 
-.wrp {
-    height: 100%;
-    max-width: 80vw;
+.box>div:nth-child(1) {
+    min-height: calc(100vh - 8em);
     display: grid;
-    justify-content: center;
-    align-items: center;
+    grid-template-rows: min-content;
 }
 
-#stdout span {
+.box>div>p>.help {
+    line-height: 1.5em;
+    text-align: left;
+    padding: 1em;
+}
+
+.box>div>p>span {
+    max-width: 80vw;
     display: inline-block;
     border-radius: 1.5em;
     padding: .5em;
     margin: .4em;
-    max-width: 80vw;
     width: max-content;
     height: max-content;
     word-wrap: break-word;
     color: var(--c-back);
-    background: var(--c-on-back);
-    transition: all 1s;
+    background: rgb(var(--c-on-back));
+    transition: all 2s;
 }
 
-#stdout .load {
-    color: var(--c-on-back-2);
-    background: var(--c-on-back-2);
+.box>div kbd {
+    background: var(--c-on-back-on);
+    padding: .2em;
+    font-size: 90%;
+    border-radius: .5em;
+    box-shadow: var(--c-shadow);
 }
 
-.bottom {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1em;
+.box>div>p>.load {
+    color: var(--c-back);
+    background: var(--c-back);
 }
 
-.ico svg {
+.btm>div svg {
+    user-select: none;
     width: 1em;
     padding: .25em;
-    fill: var(--c-on-back);
+    fill: rgb(var(--c-on-back));
     background: transparent;
     border-radius: 1em;
     transition: all .1s ease-in-out;
 }
 
-.ico svg:hover {
-    background: var(--c-on-back-h);
+.btm>div svg:hover {
+    background: rgba(var(--c-on-back), .4);
     transform: scale(1.1);
 }
 
-#stdin {
+.btm>p {
+    max-width: 90vw;
+    justify-self: center;
     border-radius: 1em;
     background-color: var(--c-main);
     color: var(--c-back);
-    max-width: 90vw;
-    max-height: 10vh;
-    min-width: 8em;
+    min-width: 6.5em;
     padding: .5em;
-    width: max-content;
     word-wrap: break-word;
     break-after: right;
     overflow-y: scroll;
     scrollbar-width: none;
 }
 
-#stdin:before {
-    content: "~$ ";
-    transition: all .4s ease-in-out;
+.btm>p:before {
+    content: "> ";
 }
 
-#stdin:empty:after {
+.btm>p:empty:after {
     content: "write here";
     white-space: nowrap;
-    overflow: hidden;
     padding-right: .1em;
     border-right: .1em solid var(--c-back);
-    max-width: 22ch;
-    animation: typing 1s steps(22), blink .5s infinite alternate;
+    animation: typing 1s, blink .5s infinite alternate;
+}
+
+@keyframes notif {
+    0% {
+        top: -5em;
+        opacity: 0;
+    }
+    20%, 80% {
+        top: 0;
+        opacity: 1;
+    }
+    100% {
+        top: 5em;
+        opacity: 0;
+    }
 }
 
 @keyframes typing {

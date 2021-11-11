@@ -3,10 +3,12 @@
 <head>
 
     <meta charset="UTF-8">
-    <title><#name></title>
+    <title>
+        <#name>
+    </title>
 
-    <link rel="icon" href="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' style='fill: %23fff'%3E%3Cpath d='M19 2.01H6c-1.206 0-3 .799-3 3v14c0 2.201 1.794 3 3 3h15v-2H6.012C5.55 19.998 5 19.815 5 19.01c0-.101.009-.191.024-.273.112-.575.583-.717.987-.727H20c.018 0 .031-.009.049-.01H21V4.01c0-1.103-.897-2-2-2zm0 14H5v-11c0-.806.55-.988 1-1h7v7l2-1 2 1v-7h2v12z'%3E%3C/path%3E%3C/svg%3E" />
-   
+    <link rel="icon" href="ico.svg" />
+
     <!--
         Made by Lucas Maillet
         Mail : loucas.maillet.pro@gmail.com
@@ -18,16 +20,18 @@
 </head>
 
 <body>
-    
+
     <div class="box">
-        <div id="topBox">
-            <p><#name> <#version></p>
+        <div>
+            <div class="top">
+                <p>
+                    <#name>
+                </p>
+            </div>
+            <p></p>
         </div>
-        <div class="wrp">
-            <p id="stdout"></p>
-        </div>
-        <div class="bottom">
-            <div class="ico">
+        <div class="btm">
+            <div>
                 <svg onclick="show()" viewBox="0 0 24 24">
                     <path
                         d="M14 12c-1.095 0-2-.905-2-2 0-.354.103-.683.268-.973C12.178 9.02 12.092 9 12 9a3.02 3.02 0 0 0-3 3c0 1.642 1.358 3 3 3 1.641 0 3-1.358 3-3 0-.092-.02-.178-.027-.268-.29.165-.619.268-.973.268z">
@@ -62,9 +66,11 @@
                     </path>
                 </svg>
             </div>
-            <p id="stdin" min-length="2" data-placeholder="Write here" contenteditable></p>
+            <p min-length="2" data-placeholder="Write here" contenteditable></p>
         </div>
     </div>
+
+    <div class="notifs"></div>
 
     <script src="index.js"></script>
 
