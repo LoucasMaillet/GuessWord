@@ -339,9 +339,9 @@ document.onkeydown = (key) => {
 
 /* Setup */
 
-genSave(` $helloThere`);
+genSave(`$helloThere`);
 fetch(new Request("https://api.github.com/repos/LoucasMaillet/GuessWord/releases/latest")).then(async (res) => {
     res = await res.json();
     if (res.tag_name == version) notif("GuessWord is up to date.");
-    else notif(`New release from <a href="https://github.com/LoucasMaillet/GuessWord/releases/download/${res.tag_name}/index.html">Github</a>.`);
+    else notif(`New release (${res.tag_name}) from <a href="https://github.com/LoucasMaillet/GuessWord/releases/download/${res.tag_name}/index.html">Github</a>.`);
 })
