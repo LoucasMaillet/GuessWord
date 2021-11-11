@@ -26,8 +26,7 @@ You can see a preview of release [here](https://htmlpreview.github.io/?https://g
 The results is returned in stdin, but only the macro is saved, not the callBack.
 
 - `$chrono(minutes, secondes)` Start a chronometer in box event.
-- `$extern(url | path)` Open a pop-up to an extern ressource. 
-- `$file` Get content from another file.
+- `$extern(url | path)` Open a pop-up to an extern ressource.
 - `$helloThere` Just the welcome message. 
 - `$reset` Reset parameters.
 - `$transfrom(characters, regex=wordRegex)` Change default characters who replace those of words. And the regex is for choose what will be replaced.
@@ -37,4 +36,3 @@ The results is returned in stdin, but only the macro is saved, not the callBack.
 # Build
 
 Was build with WPC (see [here](https://github.com/LoucasMaillet/WPC))
-
