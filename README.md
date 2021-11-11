@@ -1,4 +1,4 @@
-# GuessWord v.6
+# GuessWord v.0.0.2
 
 Just a little webpage blind test game who don't require a server to work.
 
