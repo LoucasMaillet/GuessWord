@@ -5,7 +5,7 @@ const stdout = document.querySelector(".box > div > p");
 const topBox = document.querySelector(".top");
 const notifs = document.querySelector(".notifs");
 
-var saveText = [];
+var cells = [];
 var showState = false;
 var wordRegex = /[A-Za-z]/g;
 var wordCharacter = "X ";
@@ -51,31 +51,6 @@ function notif(content) {
 /* Macros */
 
 const macros = {
-    /**
-     * Add a text file.
-     * @return {String}
-     */
-    file: async () => {
-        open = document.createElement("input");
-        open.type = "file";
-        return await new Promise((resolve, reject) => {
-            open.addEventListener("change", () => {
-                file = open.files[0];
-                if (/text/.test(file.type)) {
-                    var reader = new FileReader();
-                    reader.onload = () => {
-                        resolve(reader.result);
-                    };
-                    reader.onerror = reject;
-                    reader.readAsText(file, "UTF-8");
-                } else {
-                    alert("File type invalid.");
-                }
-            });
-            open.click();
-        });
-    },
-
     /**
      * Show a local or a youtube video.
      * @param {String} path Path/Url to the video.
@@ -123,7 +98,7 @@ const macros = {
         topBox.style.color = "var(--c-back)";
         wordRegex = /[A-Za-z]/g;
         wordCharacter = "X ";
-        genSave("$helloThere");
+        genCells("$helloThere");
     },
 
     /**
@@ -185,6 +160,31 @@ function help() {
 }
 
 /**
+ * Get a text file.
+ * @return {String}
+ */
+async function getFile() {
+    open = document.createElement("input");
+    open.type = "file";
+    return await new Promise((resolve, reject) => {
+        open.addEventListener("change", () => {
+            file = open.files[0];
+            if (/text/.test(file.type)) {
+                var reader = new FileReader();
+                reader.onload = () => {
+                    resolve(reader.result);
+                };
+                reader.onerror = reject;
+                reader.readAsText(file, "UTF-8");
+            } else {
+                alert("File type invalid.");
+            }
+        });
+        open.click();
+    });
+}
+
+/**
  * Show every word.
  */
 function show() {
@@ -203,7 +203,7 @@ function show() {
 function save() {
     fileSaver = document.createElement("a");
     fileSaver.download = `${new Date().toLocaleDateString('fr-FR', { hour12: false }).replace(/(\/)/g, "-")}.txt`;
-    fileSaver.href = `data:text/plain;charset=utf-8, ${encodeURIComponent(saveText.join(" "))}`;
+    fileSaver.href = `data:text/plain;charset=utf-8, ${encodeURIComponent(cells.join(" "))}`;
     fileSaver.click();
 }
 
@@ -211,7 +211,7 @@ function save() {
  * Un/show a word.
  * @param {HTMLElement} word Word to un/show.
  */
-function wordClick(cell) {
+function cellClick(cell) {
     if (cell.innerHTML != cell.dataset.content) {
         cell.innerHTML = cell.dataset.content;
     } else {
@@ -220,96 +220,72 @@ function wordClick(cell) {
 }
 
 /**
- * Un/show a word and save his state.
- * @param {HTMLElement} word Word to un/show.
+ * Un/show a cell and save his state.
+ * @param {HTMLElement} cell Cell to un/show.
+ * @param {Int} id Word to un/show.
  */
-function wordClickSave(cell) {
+function cellClickSave(cell, id) {
     if (cell.innerHTML != cell.dataset.content) {
-        saveText[cell.dataset.id] = `${saveText[cell.dataset.id][0]}^${saveText[cell.dataset.id].slice(1)}`;
+        cells[id] = `${cells[id][0]}^${cells[id].slice(1)}`;
         cell.innerHTML = cell.dataset.content;
     } else {
-        saveText[cell.dataset.id] = saveText[cell.dataset.id].remove("^");
+        cells[id] = cells[id].remove("^");
         cell.innerHTML = cell.dataset.hide;
     }
-}
-
-/**
- * Generate a word HTMLElement.
- * @param {String} content Content to turn in cell.
- * @param {String} onclick Call when clicked.
- */
-async function genWord(content, onclick) {
-    cell = document.createElement("span");
-    cell.setAttribute("onclick", onclick);
-    cell.dataset.content = content.remove(/¤/g, "^");
-    cell.title = `length : ${cell.dataset.content.length}`;
-    cell.dataset.hide = cell.dataset.content.replace(wordRegex, wordCharacter);
-    if (content.includes("^")) cell.innerHTML = cell.dataset.content;
-    else cell.innerHTML = cell.dataset.hide;
-    cell.classList.add("load");
-    stdout.appendChild(cell);
-    await delay(100);
-    cell.classList.remove("load");
-    return cell
 }
 
 /**
  * Generate each word.
  * @param {String} text Text to generate.
  */
-async function gen(text) {
-    let buffer = text.match(/([^\s¤]+|¤[^¤]*¤+|\n)/g);
-    for (chunk in buffer) {
-        chunk = buffer[chunk];
-        if (chunk == "\n") {
-            stdout.innerHTML += "<br>";
-            continue
-        }
-        else if (chunk.includes("$")) {
+async function genCells(text) {
+    stdout.innerHTML = null;
+    cells = [];
+    let contents = [];
+    let chunk = text.match(/([^\s¤]+|¤[^¤]*¤+|\n)/g);
+    for (id = 0; id < chunk.length; id++) {
+        let cell = content = chunk[id];
+        if (content.includes("$")) {
             try {
-                let [macro, arguments] = chunk.remove(/¤/g, "^").match(/(?<=\$).*?(?=\(|$)|(?<=\().*?(?=\))/g);
+                let [macro, arguments] = content.match(/(?<=\$).*?(?=\(|$)|(?<=\().*?(?=\))/g);
                 if (macro in macros) {
-                    res = await (eval(`macros.${macro}`))(...eval(`[${arguments}]`));
-                    if (res) await gen(res)
-                }
-            } catch (err) {
-                chunk = err;
-            }
-        } else {
-            await genWord(chunk, "wordClick(this)");
-        }
-    }
-}
-
-/**
- * Generate each word and save it.
- * @param {String} text Text to generate.
- */
-async function genSave(text) {
-    stdout.innerHTML = "";
-    saveText = [];
-    let buffer = text.match(/([^\s¤]+|¤[^¤]*¤+|\n)/g);
-    for (id = 0; id < buffer.length; id++) {
-        let chunk = buffer[id];
-        saveText.push(chunk);
-        if (chunk == "\n") {
-            stdout.innerHTML += "<br>";
-            continue
-        }
-        else if (chunk.includes("$")) {
-            try {
-                let [macro, arguments] = chunk.remove(/¤/g, "^").match(/(?<=\$).*?(?=\(|$)|(?<=\().*?(?=\))/g);
-                if (macro in macros) {
-                    res = await (eval(`macros.${macro}`))(...eval(`[${arguments}]`));
-                    if (res) await gen(res)
+                    content = await (eval(`macros.${macro}`))(...eval(`[${arguments}]`))
+                } else {
+                    throw TypeError(`unexcepted macro`)
                 }
             } catch (err) {
                 notif(err);
+                continue
             }
-        } else {
-            (await genWord(chunk, "wordClickSave(this)")).dataset.id = id;
         }
+        cells.push(cell);
+        contents.push(content);
     };
+    for (id = 0; id < contents.length; id++) {
+        if (!contents[id]) continue;
+        if (cells[id][0] == "$") onclick_ = "cellClick(this)";
+        else onclick_ = `cellClickSave(this,${id})`;
+        let subCells = contents[id].match(/([^\s¤]+|¤[^¤]*¤+|\n)/g);
+        for (sId = 0; sId < subCells.length; sId++) {
+            if (subCells[sId] == "\n") stdout.innerHTML += "<br>";
+            else {
+                /* gen a cell */
+                let cellHtml = document.createElement("span");
+                cellHtml.setAttribute("onclick", onclick_);
+                cellHtml.dataset.content = subCells[sId].remove(/¤/g, "^");
+                cellHtml.title = `length : ${cellHtml.dataset.content.length}`;
+                cellHtml.dataset.hide = cellHtml.dataset.content.replace(wordRegex, wordCharacter);
+                /* check if was viewed */
+                if (subCells[sId].includes("^")) cellHtml.innerHTML = cellHtml.dataset.content;
+                else cellHtml.innerHTML = cellHtml.dataset.hide;
+                /* loading animation */
+                cellHtml.classList.add("load");
+                stdout.appendChild(cellHtml);
+                await delay(100);
+                cellHtml.classList.remove("load");
+            }
+        }
+    }
 }
 
 /* Events */
@@ -321,7 +297,7 @@ async function genSave(text) {
 stdin.onkeydown = async (key) => {
     if (key.key == "Enter" && !key.shiftKey) {
         [input, stdin.innerText] = [stdin.innerText, ""];
-        await genSave(input);
+        await genCells(input);
     }
 };
 
@@ -339,7 +315,7 @@ document.onkeydown = (key) => {
 
 /* Setup */
 
-genSave(`$helloThere`);
+genCells(`$helloThere`);
 fetch(new Request("https://api.github.com/repos/LoucasMaillet/GuessWord/releases/latest")).then(async (res) => {
     res = await res.json();
     if (res.tag_name == version) notif("GuessWord is up to date.");
